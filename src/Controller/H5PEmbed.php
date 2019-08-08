@@ -52,6 +52,21 @@ class H5PEmbed extends ControllerBase {
     $preloaded_dependencies = $core->loadContentDependencies($id, 'preloaded');
     $files = $core->getDependenciesFiles($preloaded_dependencies, H5PDrupal::getRelativeH5PPath());
 
+    $loadpackages = [
+      'h5p/h5p.content',
+    ];
+
+    // Load dependencies
+    foreach ($preloaded_dependencies as $dependency) {
+      $loadpackages[] = 'h5p/' . _h5p_library_machine_to_id($dependency);
+    }
+
+    $moduleHandler = \Drupal::service('module_handler');
+    $embed_type = 'external';
+
+    $moduleHandler->alter('h5p_scripts', $files['scripts'], $loadpackages, $embed_type);
+    $moduleHandler->alter('h5p_styles', $files['styles'], $loadpackages, $embed_type);
+
     // Load public files
     $jsFilePaths = array_map(function($asset){ return $asset->path; }, $files['scripts']);
     $cssFilePaths = array_map(function($asset){ return $asset->path; }, $files['styles']);
@@ -69,6 +84,9 @@ class H5PEmbed extends ControllerBase {
       'id' => $id,
       'title' => "H5P Content {$id}",
     ];
+
+    $additional_embed_head_tags = [];
+    $moduleHandler->alter('h5p_additional_embed_head_tags', $additional_embed_head_tags);
 
     // Render the page and add to the response
     ob_start();
