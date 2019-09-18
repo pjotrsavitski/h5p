@@ -70,6 +70,9 @@ class H5PEmbed extends ControllerBase {
       'title' => "H5P Content {$id}",
     ];
 
+    $additional_embed_html = [];
+    $moduleHandler->alter('h5p_additional_embed_html', $additional_embed_html);
+
     // Render the page and add to the response
     ob_start();
     include $h5p_module_path . '/vendor/h5p/h5p-core/embed.php';

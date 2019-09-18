@@ -12,6 +12,7 @@
   <?php if (!empty($additional_embed_head_tags)): print implode("\n", $additional_embed_head_tags); endif; ?>
 </head>
 <body>
+  <?php if (!empty($additional_embed_html)): print implode("\n", $additional_embed_html); endif; ?>
   <div class="h5p-content" data-content-id="<?php print $content['id']; ?>"></div>
   <script>
     H5PIntegration = <?php print json_encode($integration); ?>;
